@@ -1,5 +1,6 @@
-if _G.antiVirusStarted then return end
-_G.antiVirusStarted = true
+if _G.EAntiVirusStarted then return end
+_G.EAntiVirusStarted = true
+_G.EAVSafeMode = false
 
 local shift = os.getComputerID()
 
@@ -77,7 +78,7 @@ local function checkStartup()
         newFile.write(AVLine .. "\n" .. data)
         newFile.close()
         print("[Antivirus] Fixed startup file")
-        print("[Antivirus] Rebooting in 5 seconds to prevent damage...")
+        print("[Antivirus] Rebooting in 5 seconds...")
         os.sleep(5)
         reboot()
     end
@@ -153,6 +154,7 @@ if fs.exists("/EAVStartup") then
     term.clear()
     term.setCursorPos(1, 1)
     print("[Antivirus] Found secure mode startup flag")
+    _G.EAVSafeMode = true
 
     -- Open and read flag file
     local file = fs.open("/EAVStartup", "r")
@@ -230,8 +232,31 @@ if fs.exists("/EAVStartup") then
 
         os.sleep(5)
         shell.run("edit", protectedListFile)
+    elseif data == "update" then
+        print("[Antivirus] Finding disk...")
+        local disk = peripheral.find("drive")
+        if not disk or not disk.isDiskPresent() then
+            print("[Antivirus] No disk found")
+            return
+        end
+
+        print("[Antivirus] Found disk. Checking if it contains the marker...")
+        if not fs.exists(fs.combine(disk.getMountPath(), "/EAVUpdate")) then
+            print("[Antivirus] Marker not found. No update available.")
+            return
+        end
+
+        print("[Antivirus] Marker found.")
+        print("[Antivirus] Do you trust this disk? A bad disk can corrupt your ElliNet13 Antivirus install and disable it. (y/n)")
+        local answer = read()
+        if answer ~= "y" then
+            print("[Antivirus] Aborting update.")
+            return
+        end
+        print("[Antivirus] Running setup...")
+        shell.run(fs.combine(disk.getMountPath(), "setup.lua"))
     else
-        print("[Antivirus] Invalid startup flag")
+        print("[Antivirus] Invalid flag: " .. data)
     end
 
     print("[Antivirus] Safe mode finished. Rebooting in 5 seconds...")
