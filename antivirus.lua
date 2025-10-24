@@ -244,24 +244,27 @@ if fs.exists("/EAVStartup") then
         print("[Antivirus] Finding disk...")
         local disk = peripheral.find("drive")
         if not disk or not disk.isDiskPresent() or not disk.hasData() then
-            print("[Antivirus] No floppy disk found")
-            return
+            print("[Antivirus] No floppy disk found, restarting.")
+            os.sleep(5)
+            os.reboot()
         end
 
         local disk = disk.getMountPath()
 
         print("[Antivirus] Found disk. Checking if it contains the marker...")
         if not fs.exists(fs.combine(disk, "/.EAVUpdate")) then
-            print("[Antivirus] Marker not found. No update available.")
-            return
+            print("[Antivirus] Marker not found. No update available, restarting.")
+            os.sleep(5)
+            os.reboot()
         end
 
         print("[Antivirus] Marker found.")
         print("[Antivirus] Do you trust this disk? A bad disk can corrupt your ElliNet13 Antivirus install and disable it. (y/n)")
         local answer = read()
         if answer ~= "y" then
-            print("[Antivirus] Aborting update.")
-            return
+            print("[Antivirus] Aborting update and restarting.")
+            os.sleep(5)
+            os.reboot()
         end
         print("[Antivirus] Running setup...")
         shell.run(fs.combine(disk, "setup.lua"))
