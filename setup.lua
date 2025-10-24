@@ -9,7 +9,7 @@ if _G.EAntiVirusStarted then
     print("Detected ElliNet13 Antivirus running")
     if not _G.EAVSafeMode then
         print("ElliNet13 Antivirus is not in safe mode")
-        print("Please run the update using /av/safeMode.lua")
+        print("Please run the update using /av/safemode.lua")
         return
     end
 end
