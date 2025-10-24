@@ -3,6 +3,7 @@ print("1. Edit startup")
 print("2. Unquarantine items")
 print("3. Edit protected files/folders list")
 print("4. Update ElliNet13 Antivirus")
+print("5. Safe mode shell (has less protections)")
 
 local mode = read()
 if mode == "1" then
@@ -13,6 +14,8 @@ elseif mode == "3" then
     RestartTo("EditProtectedFilesOrFoldersList")
 elseif mode == "4" then
     RestartTo("update")
+elseif mode == "5" then
+    RestartTo("shell")
 else
     print("Invalid mode")
 end

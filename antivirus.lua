@@ -154,6 +154,7 @@ if fs.exists("/EAVStartup") then
     term.clear()
     term.setCursorPos(1, 1)
     print("[Antivirus] Found secure mode startup flag")
+    print()
     _G.EAVSafeMode = true
 
     -- Open and read flag file
@@ -255,6 +256,14 @@ if fs.exists("/EAVStartup") then
         end
         print("[Antivirus] Running setup...")
         shell.run(fs.combine(disk.getMountPath(), "setup.lua"))
+    elseif data == "shell" then
+        print("[Antivirus] Are you SURE you want to enter the safe mode shell? It has less protections and should not be used unless you know what you're doing. (y/n)")
+        local answer = read()
+        if answer ~= "y" then
+            print("[Antivirus] Aborting safe mode shell.")
+        end
+        print("[Antivirus] Starting safe mode shell...")
+        shell.run("shell")
     else
         print("[Antivirus] Invalid flag: " .. data)
     end
