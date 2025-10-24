@@ -403,7 +403,11 @@ local function updateCheck()
         print("[Antivirus] Found git repository, guessing this is dev.")
         return
     end
-    
+    if fs.exists(fs.combine(antivirusDir, "noupdate.flag")) then
+        print("[Antivirus] Found noupdate.flag, skipping update check.")
+        return
+    end
+
     if http then
         -- Get latest commit
         local commitsLink = "https://api.github.com/repos/ElliNet13/theccwww/commits"
