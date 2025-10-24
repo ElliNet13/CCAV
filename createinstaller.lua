@@ -16,10 +16,10 @@ if answer ~= "y" then
 end
 
 for _, file in ipairs(fs.list(destination)) do
-    fs.delete(destination.."/"..file)
+    fs.delete(fs.combine(destination, file))
 end
 
-fs.makeDir(destination.."/files")
+fs.makeDir(fs.combine(destination, "files"))
 
 local prodFiles = {
     "antivirus.lua",
@@ -27,10 +27,10 @@ local prodFiles = {
 }
 
 for _, file in ipairs(prodFiles) do
-    fs.copy(fs.getDir(shell.getRunningProgram()) .. "/" .. file, destination.."/files/"..file)
+    fs.copy(fs.combine(fs.getDir(shell.getRunningProgram()), file), fs.combine(fs.combine(destination, "files"), file))
 end
 
-fs.copy(fs.getDir(shell.getRunningProgram()) .. "/setup.lua", destination .. "/setup.lua")
+fs.copy(fs.getDir(shell.getRunningProgram()) .. "/setup.lua", destination.."/setup.lua")
 
 local markerFile = fs.open(destination .. "/.EAVUpdate", "w")
 markerFile.write("This file is a marker to tell ElliNet13 Antivirus that this is a update disk.")

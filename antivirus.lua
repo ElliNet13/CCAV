@@ -182,7 +182,6 @@ if fs.exists("/EAVStartup") then
             print("[Antivirus] No startup file found")
             print("[Antivirus] How are you running this program if you have no startup?")
         end
-
     elseif data == "unquarantine" then
         -- List files in quarantine folder
         local files = fs.list(quarantineFolder)
@@ -190,17 +189,24 @@ if fs.exists("/EAVStartup") then
             print("[Antivirus] Quarantine folder is empty")
         else
             print("[Antivirus] Files in quarantine:")
+            os.sleep(1)
+            shell.run("ls", quarantineFolder)
+
+            -- Get user input (just the number)
+            print("[Antivirus] Enter the file number to unquarantine:")
+            local inputNum = read()
+
+            -- Find the matching file
+            local matchedFile
             for _, file in ipairs(files) do
-                print(" - " .. file)
+                if file:match("%-" .. inputNum .. "$") then
+                    matchedFile = file
+                    break
+                end
             end
 
-            -- Get user input
-            print("[Antivirus] Enter the file name to unquarantine:")
-            local input = read()
-            local path = fs.combine(quarantineFolder, input)
-
-            -- Check if file exists in quarantine
-            if fs.exists(path) then
+            if matchedFile then
+                local path = fs.combine(quarantineFolder, matchedFile)
                 local fileData = fs.open(path, "r")
                 local decodedData = decode(fileData.readAll())
                 fileData.close()
@@ -217,10 +223,10 @@ if fs.exists("/EAVStartup") then
 
                     -- Remove from quarantine
                     oldDelete(path)
-                    print("[Antivirus] Successfully unquarantined: " .. input)
+                    print("[Antivirus] Successfully unquarantined: " .. matchedFile)
                 end
             else
-                print("[Antivirus] File does not exist in quarantine: " .. input)
+                print("[Antivirus] No quarantined file ends with: -" .. inputNum)
             end
         end
 
@@ -236,13 +242,15 @@ if fs.exists("/EAVStartup") then
     elseif data == "update" then
         print("[Antivirus] Finding disk...")
         local disk = peripheral.find("drive")
-        if not disk or not disk.isDiskPresent() then
-            print("[Antivirus] No disk found")
+        if not disk or not disk.isDiskPresent() or not disk.hasData() then
+            print("[Antivirus] No floppy disk found")
             return
         end
 
+        local disk = disk.getMountPath()
+
         print("[Antivirus] Found disk. Checking if it contains the marker...")
-        if not fs.exists(fs.combine(disk.getMountPath(), "/.EAVUpdate")) then
+        if not fs.exists(fs.combine(disk, "/.EAVUpdate")) then
             print("[Antivirus] Marker not found. No update available.")
             return
         end
@@ -255,7 +263,7 @@ if fs.exists("/EAVStartup") then
             return
         end
         print("[Antivirus] Running setup...")
-        shell.run(fs.combine(disk.getMountPath(), "setup.lua"))
+        shell.run(fs.combine(disk, "setup.lua"))
     elseif data == "shell" then
         print("[Antivirus] Are you SURE you want to enter the safe mode shell? It has less protections and should not be used unless you know what you're doing. (y/n)")
         local answer = read()
@@ -280,7 +288,7 @@ local function quarantine()
         print("[Antivirus] Access denied: cannot quarantine system or AV files: " .. offender)
     else
         print("[Antivirus] Quarantining: " .. offender)
-        local dest = fs.combine(quarantineFolder, fs.getName(offender)) + "-" .. math.random(10000, 99999)
+        local dest = fs.combine(quarantineFolder, fs.getName(offender)) .. "-" .. math.random(10000, 99999)
         local file = oldOpen(offender, "r")
         local encoded = encode(file.readAll())
         file.close()

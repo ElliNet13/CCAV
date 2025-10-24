@@ -1,3 +1,13 @@
+if not _G.EAntiVirusStarted then
+    print("ElliNet13 Antivirus is not running or installed.")
+    return
+end
+
+if _G.EAVSafeMode then
+    print("ElliNet13 Antivirus is already in safe mode.")
+    return
+end
+
 print("Which mode do you want to run?")
 print("1. Edit startup")
 print("2. Unquarantine items")

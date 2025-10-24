@@ -22,8 +22,8 @@ end
 -- If the destination exists, only delete things that are NOT configs
 if fs.exists(destination) then
     for _, item in ipairs(fs.list(destination)) do
-        if item ~= "protectedFiles.txt" then
-            fs.delete(destination .. "/" .. item)
+        if item ~= "protectedFiles.txt" and item ~= "quarantine" then
+            fs.delete(fs.combine(destination, item))
         end
     end
 else
@@ -31,12 +31,12 @@ else
 end
 
 -- Copy the new files into the destination
-local sourceFiles = fs.getDir(shell.getRunningProgram()) .. "/files"
+local sourceFiles = fs.combine(fs.getDir(shell.getRunningProgram()), "files")
 for _, file in ipairs(fs.list(sourceFiles)) do
-    fs.copy(sourceFiles .. "/" .. file, destination .. "/" .. file)
+    fs.copy(fs.combine(sourceFiles, file), fs.combine(destination, file))
 end
 
 print("Setup finished!")
 print("Installed to " .. destination)
-print("Running the antivirus (will reboot)...")
-shell.run(destination .. "/antivirus.lua")
+print("Running the antivirus...")
+shell.run(fs.combine(destination, "antivirus.lua"))
