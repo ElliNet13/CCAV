@@ -14,6 +14,7 @@ print("2. Unquarantine items")
 print("3. Edit protected files/folders list")
 print("4. Update ElliNet13 Antivirus from disk")
 print("5. Safe mode shell (has less protections)")
+print("6. HTTP update (Requires HTTP to be enabled, can be used to repair corrupted EAV files)")
 
 local mode = read()
 if mode == "1" then
@@ -26,6 +27,8 @@ elseif mode == "4" then
     RestartTo("update")
 elseif mode == "5" then
     RestartTo("shell")
+elseif mode == "6" then
+    RestartTo("httpupdate")
 else
     print("Invalid mode")
 end

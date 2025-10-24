@@ -159,7 +159,7 @@ if fs.exists("/EAVStartup") then
     _G.EAVSafeMode = true
 
     -- Open and read flag file
-    local file = fs.open("/EAVStartup", "r")
+    local file = oldOpen("/EAVStartup", "r")
     local data = file.readAll()
     file.close()
 
@@ -208,7 +208,7 @@ if fs.exists("/EAVStartup") then
 
             if matchedFile then
                 local path = fs.combine(quarantineFolder, matchedFile)
-                local fileData = fs.open(path, "r")
+                local fileData = oldOpen(path, "r")
                 local decodedData = decode(fileData.readAll())
                 fileData.close()
 
@@ -218,7 +218,7 @@ if fs.exists("/EAVStartup") then
                     print("[Antivirus] Cannot unquarantine to protected location: " .. dest)
                 else
                     -- Write decoded file
-                    local outFile = fs.open(dest, "w")
+                    local outFile = oldOpen(dest, "w")
                     outFile.write(decodedData)
                     outFile.close()
 
@@ -292,7 +292,7 @@ if fs.exists("/EAVStartup") then
             return
         end
         
-        local file = fs.open(fs.combine(tempDir, "eav.tar.gz"), "w")
+        local file = oldOpen(fs.combine(tempDir, "eav.tar.gz"), "w")
         file.write(fileData)
         file.close()
 
@@ -417,7 +417,7 @@ local function updateCheck()
         local latestUpdateFile = fs.combine(antivirusDir, "latestcommit.txt")
         -- Compare to latestcommit.txt if it exists
         if fs.exists(fs.combine(antivirusDir, "latestcommit.txt")) then
-            local file = fs.open(fs.combine(antivirusDir, "latestcommit.txt"), "r")
+            local file = oldOpen(fs.combine(antivirusDir, "latestcommit.txt"), "r")
             local data = file.readAll()
             file.close()
             if data == latestCommit then
@@ -433,7 +433,7 @@ local function updateCheck()
             end
         else
             print("[Antivirus] No latest update file found, creating it.")
-            local file = fs.open(latestUpdateFile, "w")
+            local file = oldOpen(latestUpdateFile, "w")
             file.write(latestCommit)
             file.close()
         end
