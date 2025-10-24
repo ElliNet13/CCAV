@@ -397,3 +397,47 @@ end
 _G.RestartTo = RestartTo
 
 print("[Antivirus] Antivirus started")
+
+local function updateCheck()
+    if fs.exists(fs.combine(antivirusDir, ".git")) then
+        print("[Antivirus] Found git repository, guessing this is dev.")
+        return
+    end
+    
+    if http then
+        -- Get latest commit
+        local commitsLink = "https://api.github.com/repos/ElliNet13/theccwww/commits"
+        local file = http.get(commitsLink)
+        if file.getResponseCode() ~= 200 then print("[Antivirus] Could not check for updates because of HTTP error " .. file.getResponseCode() .. ". Aborting update check.") return end
+        local data = file.readAll()
+        file.close()
+        local commits = textutils.unserializeJSON(data)
+        if not commits then print("[Antivirus] Could not check for updates because of invalid JSON. Aborting update check.") return end
+        local latestCommit = commits[1].sha
+        local latestUpdateFile = fs.combine(antivirusDir, "latestcommit.txt")
+        -- Compare to latestcommit.txt if it exists
+        if fs.exists(fs.combine(antivirusDir, "latestcommit.txt")) then
+            local file = fs.open(fs.combine(antivirusDir, "latestcommit.txt"), "r")
+            local data = file.readAll()
+            file.close()
+            if data == latestCommit then
+                return -- No update
+            else
+                print("[Antivirus] Update found.")
+                print("[Antivirus] For your security, this will be updated immediately.")
+                print("[Antivirus] Latest commit: " .. latestCommit)
+                print("[Antivirus] Current commit: " .. data)
+                print("[Antivirus] Restarting to update...")
+                os.sleep(2)
+                RestartTo("httpupdate")
+            end
+        else
+            print("[Antivirus] No latest update file found, creating it.")
+            local file = fs.open(latestUpdateFile, "w")
+            file.write(latestCommit)
+            file.close()
+        end
+    end
+end
+
+updateCheck()

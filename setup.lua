@@ -1,10 +1,3 @@
-print("Welcome to the ElliNet13 Antivirus setup script!")
-print("This script will install/update the program.")
-print("Are you sure you want to continue? (y/n)")
-local answer = read()
-
-local destination = "/av"
-
 if _G.EAntiVirusStarted then
     print("Detected ElliNet13 Antivirus running")
     if not _G.EAVSafeMode then
@@ -13,6 +6,18 @@ if _G.EAntiVirusStarted then
         return
     end
 end
+
+print("Welcome to the ElliNet13 Antivirus setup script!")
+print("This script will install/update the program.")
+local answer = nil
+if not _G.EAVSafeMode then
+    print("Are you sure you want to continue? (y/n)")
+    answer = read()
+else
+    answer = "y"
+end
+
+local destination = "/av"
 
 if answer ~= "y" then
     print("Aborting")
