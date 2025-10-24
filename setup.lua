@@ -38,5 +38,5 @@ end
 
 print("Setup finished!")
 print("Installed to " .. destination)
-print("To access websites, run the browser.lua script in the " .. destination .. " directory.")
-print("To host your own website, run the server.lua script in the " .. destination .. " directory.")
+print("Running the antivirus (will reboot)...")
+shell.run(destination .. "/antivirus.lua")
