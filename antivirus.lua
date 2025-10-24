@@ -46,6 +46,7 @@ print("[Antivirus] This computer is secured by ElliNet13 Antivirus")
 local oldDelete = fs.delete
 local oldMove   = fs.move
 local oldOpen   = fs.open
+local reboot    = os.reboot
 local getProgram = shell.getRunningProgram
 
 -- Function to check if the AV is at the top of the startup file
@@ -76,6 +77,9 @@ local function checkStartup()
         newFile.write(AVLine .. "\n" .. data)
         newFile.close()
         print("[Antivirus] Fixed startup file")
+        print("[Antivirus] Rebooting in 5 seconds to prevent damage...")
+        os.sleep(5)
+        reboot()
     end
 end
 
@@ -232,7 +236,7 @@ if fs.exists("/EAVStartup") then
 
     print("[Antivirus] Safe mode finished. Rebooting in 5 seconds...")
     os.sleep(5)
-    os.reboot()
+    reboot()
 end
 
 -- Quarantine function (does NOT move AV or /rom scripts)
@@ -255,7 +259,7 @@ local function quarantine()
     end
     print("Rebooting in 5 seconds to prevent further damage...")
     os.sleep(5)
-    os.reboot()
+    reboot()
 end
 
 -- Safe delete
@@ -300,7 +304,7 @@ function RestartTo(flag)
     file.close()
     print("Rebooting into mode")
     os.sleep(2)
-    os.reboot()
+    reboot()
 end
 
 _G.RestartTo = RestartTo
