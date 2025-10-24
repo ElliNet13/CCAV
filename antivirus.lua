@@ -276,7 +276,7 @@ if fs.exists("/EAVStartup") then
         local testRequest = http.get("https://example.tweaked.cc")
         if testRequest.getResponseCode() ~= 200 then print("[Antivirus] Could not connect to example.tweaked.cc. You may be offline. Aborting update.") return end
 
-        local file = http.get("https://n8n.ellinet13.com/webhook/d10a6cfa-6bef-44b1-916a-3ddd7f16b927/:eav.tar.gz")
+        local file = http.get("https://n8n.ellinet13.com/webhook/update.tar.gz?item=eav")
         if file.getResponseCode() ~= 200 then print("[Antivirus] Could not download update because of HTTP error " .. file.getResponseCode() .. ". Aborting update.") return end
 
         local fileData = file.readAll()
