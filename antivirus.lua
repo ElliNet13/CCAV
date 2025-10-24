@@ -432,7 +432,7 @@ local function updateCheck()
                 RestartTo("httpupdate")
             end
         else
-            print("[Antivirus] No latest update file found, creating it.")
+            print("[Antivirus] Antivirus updated.")
             local file = oldOpen(latestUpdateFile, "w")
             file.write(latestCommit)
             file.close()
