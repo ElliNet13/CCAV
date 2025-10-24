@@ -232,7 +232,7 @@ if fs.exists("/EAVStartup") then
         end
 
     elseif data == "EditProtectedFilesOrFoldersList" then
-        print("[Antivirus] Editing protected files list (you will not be able to edit files in thus list)")
+        print("[Antivirus] Editing protected files list (you will not be able to edit files in this list)")
         print("[Antivirus] Note: All lines not starting with / are ignored (you can use them as comments)")
         print("[Antivirus] Seperate file and folder name with new lines")
         print("[Antivirus] Folders in the list will have all the files inside be protected.")
