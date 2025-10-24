@@ -7,3 +7,4 @@ Features:
 - Errors when trying to open for write a file that is protected
 - Files in quarantine folder cannot be moved or deleted
 - Has a safe mode for senitive operations
+- Can update itself via HTTP or a floppy disk

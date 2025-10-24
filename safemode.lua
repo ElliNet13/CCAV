@@ -12,7 +12,7 @@ print("Which mode do you want to run?")
 print("1. Edit startup")
 print("2. Unquarantine items")
 print("3. Edit protected files/folders list")
-print("4. Update ElliNet13 Antivirus")
+print("4. Update ElliNet13 Antivirus from disk")
 print("5. Safe mode shell (has less protections)")
 print("6. HTTP update (Requires HTTP to be enabled)")
 

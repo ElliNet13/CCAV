@@ -39,4 +39,5 @@ end
 print("Setup finished!")
 print("Installed to " .. destination)
 print("Running the antivirus...")
-shell.run(fs.combine(destination, "antivirus.lua"))
+shell.setDir(destination)
+shell.run("antivirus.lua")
