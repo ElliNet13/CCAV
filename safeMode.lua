@@ -1,0 +1,12 @@
+print("Which mode do you want to run?")
+print("1. Edit startup")
+print("2. Unquarantine items")
+print("3. Edit protected files/folders list")
+local mode = read()
+if mode == "1" then
+    RestartTo("editStartup")
+elseif mode == "2" then
+    RestartTo("unquarantine")
+elseif mode == "3" then
+    RestartTo("EditProtectedFilesOrFoldersList")
+end
