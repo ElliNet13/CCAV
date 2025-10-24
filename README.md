@@ -1,6 +1,6 @@
 # Computercraft Antivirus
 
-This is a simple antivirus for Computercraft. (For tested on tweaked)
+This is a simple antivirus for Computercraft. (tested on CC:Tweaked)
 
 Features:
 - Automatically quarantine files that try to move or delete protected files or folders
