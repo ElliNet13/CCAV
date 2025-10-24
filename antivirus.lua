@@ -4,6 +4,7 @@ _G.EAVSafeMode = false
 
 local shift = os.getComputerID()
 
+-- Normalizes a path
 local function normalizePath(path)
     if string.sub(path, 1, 1) ~= "/" then
         path = "/" .. path
@@ -35,7 +36,7 @@ end
 local antivirusDir = normalizePath(fs.getDir(shell.getRunningProgram()))
 local quarantineFolder = normalizePath(antivirusDir .. "/quarantine")
 local protectedListFile = fs.combine(antivirusDir, "protectedFiles.txt")
-
+local libaries = fs.combine(antivirusDir, "libaries")
 
 if not fs.exists(quarantineFolder) then
     fs.makeDir(quarantineFolder)
@@ -264,6 +265,35 @@ if fs.exists("/EAVStartup") then
         end
         print("[Antivirus] Running setup...")
         shell.run(fs.combine(disk, "setup.lua"))
+    elseif data == "httpupdate" then
+        local CCArchive = fs.combine(libaries, "CC-Archive")
+        print("[Antivirus] Starting HTTP update...")
+        local tempDir = "/tmpEAVhttpupdate" .. math.random(10000, 99999)
+        fs.makeDir(tempDir)
+
+        if not http then print("[Antivirus] HTTP is disabled and not available. Aborting update.") return end
+
+        local testRequest = http.get("https://example.tweaked.cc")
+        if testRequest.getResponseCode() ~= 200 then print("[Antivirus] Could not connect to example.tweaked.cc. You may be offline. Aborting update.") return end
+
+        local file = http.get("https://n8n.ellinet13.com/webhook/d10a6cfa-6bef-44b1-916a-3ddd7f16b927/:eav.tar.gz")
+        if file.getResponseCode() ~= 200 then print("[Antivirus] Could not download update because of HTTP error " .. file.getResponseCode() .. ". Aborting update.") return end
+
+        local fileData = file.readAll()
+        file.close()
+
+        if fileData == nil or fileData == "" then
+            print("[Antivirus] Could not download update, file is empty. Aborting update.")
+            return
+        end
+        
+        local file = fs.open(fs.combine(tempDir, "eav.tar.gz"), "w")
+        file.write(fileData)
+        file.close()
+
+        shell.run(fs.combine(CCArchive, "tar.lua"), "-xzf", fs.combine(tempDir, "eav.tar.gz"), tempDir .. "/")
+        
+        shell.run(fs.combine(tempDir, "setup.lua"))
     elseif data == "shell" then
         print("[Antivirus] Are you SURE you want to enter the safe mode shell? It has less protections and should not be used unless you know what you're doing. (y/n)")
         local answer = read()

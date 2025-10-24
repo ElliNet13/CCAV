@@ -24,6 +24,7 @@ fs.makeDir(fs.combine(destination, "files"))
 local prodFiles = {
     "antivirus.lua",
     "safemode.lua",
+    "libraries",
 }
 
 for _, file in ipairs(prodFiles) do
