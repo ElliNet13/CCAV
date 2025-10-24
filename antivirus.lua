@@ -241,7 +241,7 @@ if fs.exists("/EAVStartup") then
         end
 
         print("[Antivirus] Found disk. Checking if it contains the marker...")
-        if not fs.exists(fs.combine(disk.getMountPath(), "/EAVUpdate")) then
+        if not fs.exists(fs.combine(disk.getMountPath(), "/.EAVUpdate")) then
             print("[Antivirus] Marker not found. No update available.")
             return
         end

@@ -32,7 +32,7 @@ end
 
 fs.copy(fs.getDir(shell.getRunningProgram()) .. "/setup.lua", destination .. "/setup.lua")
 
-local markerFile = fs.open(destination .. "/EAVUpdate", "w")
+local markerFile = fs.open(destination .. "/.EAVUpdate", "w")
 markerFile.write("This file is a marker to tell ElliNet13 Antivirus that this is a update disk.")
 markerFile.close()
 
