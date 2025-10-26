@@ -61,6 +61,7 @@ print("[Antivirus] This computer is secured by ElliNet13 Antivirus")
 local oldDelete = fs.delete
 local oldMove   = fs.move
 local oldOpen   = fs.open
+local oldList   = fs.list
 local reboot    = os.reboot
 local getProgram = shell.getRunningProgram
 
@@ -418,14 +419,29 @@ fs.move = function(src, dest)
     return oldMove(src, dest)
 end
 
--- Safe write
+-- Safe open
 fs.open = function(path, mode)
     path = normalizePath(path)
+    -- Don't allow ANY opening of the secretFolder
+    if string.sub(path, 1, #secretFolder) == secretFolder then
+        error("[Antivirus] Access denied: cannot open secret folder: " .. path, 2)
+    end 
+
+    -- Check if file is protected
     local unsafeModes = { w = true, a = true, wb = true, ab = true }
     if isProtected(path) and unsafeModes[mode] then
         error("[Antivirus] Access denied: cannot modify protected file: " .. path, 2)
     end
     return oldOpen(path, mode)
+end
+
+-- Safe list (Don't allow listing secretFolder)
+fs.list = function(path)
+    path = normalizePath(path)
+    if string.sub(path, 1, #secretFolder) == secretFolder then
+        error("[Antivirus] Access denied: cannot list secret folder: " .. path, 2)
+    end
+    return oldList(path)
 end
 
 -- Safe restart to flag
