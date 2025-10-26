@@ -424,7 +424,7 @@ fs.delete = function(path)
         quarantine()
         return false
     end
-    return oldDelete(path)
+    return callRisky(oldDelete, path)
 end
 
 -- Safe move
@@ -436,7 +436,7 @@ fs.move = function(src, dest)
         quarantine()
         return false
     end
-    return oldMove(src, dest)
+    return callRisky(oldMove, src, dest)
 end
 
 -- Safe open
@@ -452,7 +452,7 @@ fs.open = function(path, mode)
     if isProtected(path) and unsafeModes[mode] then
         error("[Antivirus] Access denied: cannot modify protected file: " .. path, 2)
     end
-    return oldOpen(path, mode)
+    return callRisky(oldOpen, path, mode)
 end
 
 -- Safe list (Don't allow listing secretFolder)
