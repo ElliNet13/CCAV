@@ -1,8 +1,16 @@
+-- Disable terminate
+local orginalPullEvent = os.pullEvent
+os.pullEvent = os.pullEventRaw
+
+-- Set variables
 if _G.EAntiVirusStarted then return end
 _G.EAntiVirusStarted = true
 _G.EAVSafeMode = false
 
 local shift = os.getComputerID()
+
+-- Required libraries
+local sha256 = require("libraries.sha2").sha256
 
 -- Normalizes a path
 local function normalizePath(path)
@@ -35,11 +43,16 @@ end
 -- Paths
 local antivirusDir = normalizePath(fs.getDir(shell.getRunningProgram()))
 local quarantineFolder = normalizePath(antivirusDir .. "/quarantine")
+local secretFolder = normalizePath(antivirusDir .. "/secrets")
 local protectedListFile = fs.combine(antivirusDir, "protectedFiles.txt")
 local libraries = fs.combine(antivirusDir, "libraries")
 
 if not fs.exists(quarantineFolder) then
     fs.makeDir(quarantineFolder)
+end
+
+if not fs.exists(secretFolder) then
+    fs.makeDir(secretFolder)
 end
 
 print("[Antivirus] This computer is secured by ElliNet13 Antivirus")
@@ -150,13 +163,46 @@ local function isProtected(path)
     return false
 end
 
--- Restart to
+-- Check for a safe mode password
+local safeModePasswordPath = fs.combine(secretFolder, "safeModePassword")
+local safeModePassword
+if fs.exists(safeModePasswordPath) then
+    local file = oldOpen(safeModePasswordPath, "r")
+    safeModePassword = file.readAll()
+    file.close()
+else
+    -- Ask the user for a password
+    print("[Antivirus] Please enter a password for safe mode (Remember it... or leave empty for none):")
+    safeModePassword = read("*")
+    
+    if not safeModePassword == "" then
+        -- Write password to file
+        local hashedPassword = sha256(safeModePassword)
+        local file = oldOpen(safeModePasswordPath, "w")
+        file.write(hashedPassword)
+        file.close()
+    end
+end
+
+-- Safe mode
 if fs.exists("/EAVStartup") then
     term.clear()
     term.setCursorPos(1, 1)
     print("[Antivirus] Found secure mode startup flag")
     print()
     _G.EAVSafeMode = true
+
+    -- Password
+    if safeModePassword ~= "" then
+        print("[Antivirus] Please enter password:")
+        local password = read("*")
+        if sha256(password) ~= safeModePassword then
+            print("[Antivirus] Incorrect password")
+            print("[Antivirus] Shutting down in 5 seconds...")
+            os.sleep(5)
+            os.shutdown()
+        end
+    end
 
     -- Open and read flag file
     local file = oldOpen("/EAVStartup", "r")
@@ -445,3 +491,6 @@ local function updateCheck()
 end
 
 updateCheck()
+
+-- Allow terminate again
+os.pullEvent = orginalPullEvent
