@@ -396,6 +396,26 @@ local function quarantine()
     reboot()
 end
 
+-- Wrapper that calls a risky function but blames *your* caller on error
+local function callRisky(func, ...)
+    local ok, result = pcall(func, ...)
+    if not ok then
+        -- Rethrow the error and blame the caller
+        error(result, 3)
+    end
+    return result
+end
+
+-- Index of a value in a table
+function table.indexOf(t, value)
+  for i, v in ipairs(t) do
+    if v == value then
+      return i
+    end
+  end
+  return nil
+end
+
 -- Safe delete
 fs.delete = function(path)
     path = normalizePath(path)
@@ -437,11 +457,16 @@ end
 
 -- Safe list (Don't allow listing secretFolder)
 fs.list = function(path)
+    if type(path) ~= "string" then error("bad argument #1 to 'list' (string expected, got " .. type(path) .. ")", 2) end
     path = normalizePath(path)
     if string.sub(path, 1, #secretFolder) == secretFolder then
         error("[Antivirus] Access denied: cannot list secret folder: " .. path, 2)
     end
-    return oldList(path)
+    local result = callRisky(oldList, path)
+    if path == normalizePath(fs.getDir(secretFolder)) then
+        table.remove(result, table.indexOf(result, fs.getName(secretFolder)))
+    end
+    return result
 end
 
 -- Safe restart to flag
