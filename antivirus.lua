@@ -176,13 +176,24 @@ else
     print("[Antivirus] Please enter a password for safe mode (Remember it... or leave empty for none):")
     safeModePassword = read("*")
     
-    if not safeModePassword == "" then
-        -- Write password to file
-        local hashedPassword = sha256(safeModePassword)
-        local file = oldOpen(safeModePasswordPath, "w")
-        file.write(hashedPassword)
-        file.close()
+    -- Write password to file
+    local hashedPassword
+    if safeModePassword == "" then
+        hashedPassword = ""
+    else
+        hashedPassword = sha256(safeModePassword)
     end
+    
+    if not hashedPassword then
+        print("[Antivirus] Error hashing password")
+        print("[Antivirus] Shutting down in 5 seconds...")
+        os.sleep(5)
+        os.shutdown()
+    end
+
+    local file = oldOpen(safeModePasswordPath, "w")
+    file.write(hashedPassword)
+    file.close()
 end
 
 -- Safe mode

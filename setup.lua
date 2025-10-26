@@ -27,7 +27,7 @@ end
 -- If the destination exists, only delete things that are NOT configs
 if fs.exists(destination) then
     for _, item in ipairs(fs.list(destination)) do
-        if item ~= "protectedFiles.txt" and item ~= "quarantine" and item ~= "noupdate.flag" then
+        if item ~= "protectedFiles.txt" and item ~= "quarantine" and item ~= "noupdate.flag" and item ~= "secrets" then
             fs.delete(fs.combine(destination, item))
         end
     end
