@@ -196,6 +196,25 @@ else
     file.close()
 end
 
+-- Check if there is a startup password
+local startupPasswordPath = fs.combine(secretFolder, "startupPassword")
+local startupPassword
+if fs.exists(startupPasswordPath) then
+    local file = oldOpen(startupPasswordPath, "r")
+    startupPassword = file.readAll()
+    file.close()
+    if startupPassword ~= "" then
+        print("[Antivirus] Please enter the startup password:")
+        local password = read("*")
+        if sha256(password) ~= startupPassword then
+            print("[Antivirus] Incorrect password")
+            print("[Antivirus] Shutting down in 5 seconds...")
+            os.sleep(5)
+            os.shutdown()
+        end
+    end
+end
+
 -- Safe mode
 if fs.exists("/EAVStartup") then
     term.clear()
@@ -375,6 +394,29 @@ if fs.exists("/EAVStartup") then
         end
         print("[Antivirus] Starting safe mode shell...")
         shell.run("shell")
+    elseif data == "startupPasswordSetup" then
+        print("[Antivirus] Setting up startup password.")
+        print("[Antivirus] Please enter a password for startup (leave empty for none):")
+        local password = read("*")
+
+        local hashedPassword
+        if password == "" then
+            hashedPassword = ""
+        else
+            hashedPassword = sha256(password)
+        end
+
+        if not hashedPassword then
+            print("[Antivirus] Error hashing password")
+            print("[Antivirus] Shutting down in 5 seconds...")
+            os.sleep(5)
+            os.shutdown()
+        end
+
+        local file = oldOpen(startupPasswordPath, "w")
+        file.write(hashedPassword)
+        file.close()
+        print("[Antivirus] Startup password set.")
     else
         print("[Antivirus] Invalid flag: " .. data)
     end
