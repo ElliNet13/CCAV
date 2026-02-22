@@ -9,6 +9,9 @@ _G.EAVSafeMode = false
 
 local shift = os.getComputerID()
 
+-- Required libraries
+local sha256 = require("libraries.sha2").sha256
+
 -- Normalizes a path
 local function normalizePath(path)
     if string.sub(path, 1, 1) ~= "/" then
@@ -43,20 +46,6 @@ local quarantineFolder = normalizePath(antivirusDir .. "/quarantine")
 local secretFolder = normalizePath(antivirusDir .. "/secrets")
 local protectedListFile = fs.combine(antivirusDir, "protectedFiles.txt")
 local libraries = fs.combine(antivirusDir, "libraries")
-
--- Set package.path to include libraries
-package.path = package.path .. ";" .. libraries .. "/?.lua"
-
--- Add folders in libraries to package.path
-for _, path in fs.list(libraries) do
-    local fullPath = fs.combine(libraries, path)
-    if fs.isDir(fullPath) then
-        package.path = package.path .. ";" .. fullPath .. "/?.lua"
-    end
-end
-
--- Required libraries
-local sha256 = require("sha2").sha256
 
 if not fs.exists(quarantineFolder) then
     fs.makeDir(quarantineFolder)
