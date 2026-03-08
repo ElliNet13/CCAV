@@ -37,4 +37,6 @@ local markerFile = fs.open(destination .. "/.EAVUpdate", "w")
 markerFile.write("This file is a marker to tell ElliNet13 Antivirus that this is a update disk.")
 markerFile.close()
 
+disk.setDiskLabel("ElliNet13 Antivirus Install Disk")
+
 print("Disk created!")
