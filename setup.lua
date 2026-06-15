@@ -1,3 +1,10 @@
+local destination = "/av"
+
+if fs.exists(fs.combine(destination, ".git")) then
+    print("Please update using git instead.")
+    return
+end
+
 if _G.EAntiVirusStarted then
     print("Detected ElliNet13 Antivirus running")
     if not _G.EAVSafeMode then
@@ -16,8 +23,6 @@ if not _G.EAVSafeMode then
 else
     answer = "y"
 end
-
-local destination = "/av"
 
 if answer ~= "y" then
     print("Aborting")
