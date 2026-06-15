@@ -2,6 +2,10 @@
 local orginalPullEvent = os.pullEvent
 os.pullEvent = os.pullEventRaw
 
+-- Turn off disk boot
+settings.set("shell.allow_disk_startup", false)
+settings.save()
+
 -- Set variables
 if _G.EAntiVirusStarted then return end
 _G.EAntiVirusStarted = true
