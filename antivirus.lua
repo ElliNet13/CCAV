@@ -592,3 +592,6 @@ updateCheck()
 
 -- Allow terminate again
 os.pullEvent = orginalPullEvent
+
+-- Run other scripts
+shell.run(fs.combine(antivirusDir, "diskstartupmanager"))
