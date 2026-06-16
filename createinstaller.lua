@@ -25,13 +25,17 @@ local prodFiles = {
     "antivirus.lua",
     "safemode.lua",
     "libraries",
+    "assets",
+    "createinstaller.lua",
+    "sandbox.lua",
+    "diskstartupmanager.lua"
 }
 
 for _, file in ipairs(prodFiles) do
     fs.copy(fs.combine(fs.getDir(shell.getRunningProgram()), file), fs.combine(fs.combine(destination, "files"), file))
 end
 
-fs.copy(fs.getDir(shell.getRunningProgram()) .. "/setup.lua", destination.."/setup.lua")
+fs.copy(fs.getDir(shell.getRunningProgram()) .. "/assets/setup.lua", destination.."/assets/setup.lua")
 
 local markerFile = fs.open(destination .. "/.EAVUpdate", "w")
 markerFile.write("This file is a marker to tell ElliNet13 Antivirus that this is a update disk.")
