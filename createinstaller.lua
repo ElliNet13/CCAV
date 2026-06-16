@@ -28,7 +28,9 @@ local prodFiles = {
     "assets",
     "createinstaller.lua",
     "sandbox.lua",
-    "diskstartupmanager.lua"
+    "diskstartupmanager.lua",
+    "vmmanager.lua",
+    "vmmanager"
 }
 
 for _, file in ipairs(prodFiles) do

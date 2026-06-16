@@ -4,7 +4,8 @@ local sc = require "cc.shell.completion"
 local pdir = fs.getDir(shell.getRunningProgram())
 package.path = package.path .. ";/" .. pdir .. "/?.lua;/" .. pdir .."/?;" .. pdir .. "?"
 
-local loaded_ld, ld = pcall(require, "LibDeflate")
+local loaded_ld = true
+local ld = require("/" .. fs.combine(fs.getDir(d), "../libraries/CC-Archive/LibDeflate"))
 
 if not shell.getCompletionInfo()[d] then
     shell.setCompletionFunction(d,sc.build(
