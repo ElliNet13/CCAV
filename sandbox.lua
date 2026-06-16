@@ -25,18 +25,13 @@ print("Starting sandbox via OrangeBox...")
 
 local orangebox = require("libraries.orangebox.orangebox")
 local biosPath = fs.combine(assetsDir, "bios.lua")
-local templatevmvfs = fs.combine(assetsDir, "templatevm.vfs")
 if not fs.exists(biosPath) then
     error("Corrupted ElliNet13 Antivirus installation. BIOS not found.")
-end
-if not fs.exists(templatevmvfs) then
-    error("Corrupted ElliNet13 Antivirus installation. Template VM not found.")
 end
 local bios = fs.open(biosPath, "r")
 local vm = orangebox:new(bios.readAll())
 bios.close()
 
-fs.copy(templatevmvfs, sandboxFile)
 vm:loadVFS(sandboxFile)
 vm.apis.debug = debug
 vm:reloadenv()
@@ -45,5 +40,4 @@ while vm.running do
     vm:resume()
     vm:queueEvent(os.pullEventRaw())
 end
-fs.delete(sandboxFile)
 print("EAV Sandbox has been closed.")
