@@ -24,4 +24,5 @@ while vm.running do
     vm:resume()
     vm:queueEvent(os.pullEventRaw())
 end
-print("EAV Sandbox has been closed.")
+print("EAV Sandbox has been closed and VM has been deleted.")
+print("Note: For more features use vmmanager, you can have VMs that do not delete themselves and other options.")
