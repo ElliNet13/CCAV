@@ -33,7 +33,7 @@ file.write("Welcome to the ElliNet13 Antivirus VM!")
 file.close()
 
 -- Now we make the actual image
-local command = "imgtool build compress " .. fs.combine(vmDir, "filesystem.vfs") .. " " .. exampleFile
+local command = "imgtool build nocompress " .. fs.combine(vmDir, "filesystem.vfs") .. " " .. exampleFile
 local currentDir = shell.dir()
 print("> cd /")
 shell.setDir("/")
