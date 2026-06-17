@@ -3,5 +3,10 @@
     "library": [
       "./libraries"
     ]
-  }
+  },
+    "diagnostics.disable": [
+        "undefined-field",
+        "deprecated",
+        "different-requires"
+    ]
 }

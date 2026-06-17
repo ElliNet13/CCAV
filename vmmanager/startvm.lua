@@ -18,7 +18,13 @@ local parser = argparse.create()
 parser:add({ "name" }, {
     name = "name",
     required = true,
-    doc = "Name of the VM",
+    doc = "[Required] Name of the VM",
+})
+
+parser:add({ "mountHostDir" }, {
+    name = "mountHostDir",
+    required = false,
+    doc = "[Optional] Folder from host to mount in /host",
 })
 
 -- Parse CLI args
@@ -44,6 +50,9 @@ local vm = orangebox:new(bios.readAll())
 bios.close()
 
 vm:loadVFS(fs.combine(vmDir, "filesystem.vfs"))
+if result.mountHostDir then
+    vm:mount("/host", result.mountHostDir)
+end
 vm.apis.debug = debug
 vm:reloadenv()
 vm:resume()
