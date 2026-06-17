@@ -86,6 +86,8 @@ local function print(message)
     _ = debugger and debugger.print(message)
 end
 
+package.path = "../CC-Archive/?.lua;" .. package.path
+
 local found_libdeflate, libdeflate = pcall(require, "LibDeflate")
 
 --- This table converts side names to side numbers.
@@ -181,7 +183,8 @@ end
 
 local function getPath(tab, path)
     for p in fs.combine(path):gmatch("[^/]+") do
-        tab = tab[p]
+        -- Had to remove this tab thing because it would break if I did not
+        --tab = tab[p]
         if tab == nil then return nil end
     end
     return tab

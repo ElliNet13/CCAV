@@ -3,23 +3,8 @@ if not _G.EAntiVirusStarted then
     return
 end
 
-math.randomseed(os.time())
-
-local function randomString(length)
-    local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    local result = ""
-
-    for i = 1, length do
-        local index = math.random(1, #chars)
-        result = result .. chars:sub(index, index)
-    end
-
-    return result
-end
-
 local antivirusDir = fs.getDir(shell.getRunningProgram())
 local assetsDir = fs.combine(antivirusDir, "assets")
-local sandboxFile = fs.combine("/", "eavsandbox" .. randomString(10) .. ".vfs")
 
 print("Starting sandbox via OrangeBox...")
 
@@ -32,7 +17,6 @@ local bios = fs.open(biosPath, "r")
 local vm = orangebox:new(bios.readAll())
 bios.close()
 
-vm:loadVFS(sandboxFile)
 vm.apis.debug = debug
 vm:reloadenv()
 vm:resume()

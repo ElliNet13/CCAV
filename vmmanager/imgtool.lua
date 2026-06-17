@@ -1,11 +1,13 @@
 local d = shell.getRunningProgram()
 local sc = require "cc.shell.completion"
 
-local pdir = fs.getDir(shell.getRunningProgram())
-package.path = package.path .. ";/" .. pdir .. "/?.lua;/" .. pdir .."/?;" .. pdir .. "?"
+package.path = "../libraries/CC-Archive/?.lua;" .. package.path
 
-local loaded_ld = true
-local ld = require("/" .. fs.combine(fs.getDir(d), "../libraries/CC-Archive/LibDeflate"))
+local loaded_ld, ld = pcall(require, "LibDeflate")
+
+if not loaded_ld then
+    error("ElliNet13 Antivirus is corrupted, LibDeflate not found.")
+end
 
 if not shell.getCompletionInfo()[d] then
     shell.setCompletionFunction(d,sc.build(
