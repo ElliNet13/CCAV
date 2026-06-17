@@ -32,7 +32,7 @@ end
 local antivirusDir = fs.combine(fs.getDir(shell.getRunningProgram()), "..")
 local assetsDir = fs.combine(antivirusDir, "assets")
 
-print("Starting sandbox via OrangeBox...")
+print("Starting VM via OrangeBox...")
 
 local orangebox = require("orangebox.orangebox")
 local biosPath = fs.combine(assetsDir, "bios.lua")
@@ -51,4 +51,4 @@ while vm.running do
     vm:resume()
     vm:queueEvent(os.pullEventRaw())
 end
-print("EAV Sandbox has been closed.")
+print('VM "' .. result.name .. '" has been closed.')
