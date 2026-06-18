@@ -2,6 +2,10 @@ if not _G.EAntiVirusStarted then
     print("ElliNet13 Antivirus is not running or installed.")
     return
 end
+if _G.EAVSafeMode then
+    print("Can not use VMs in safe mode.")
+    return
+end
 
 math.randomseed(os.time())
 
@@ -52,11 +56,13 @@ bios.close()
 
 vm:loadVFS(fs.combine(vmDir, "filesystem.vfs"))
 vm:mount("/vmbin", fs.combine(antivirusDir, "vmbin"))
+vm:mount("/vmlibraries", fs.combine(antivirusDir, "libraries"))
 if result.mountHostDir then
     vm:mount("/host", result.mountHostDir)
 end
 
 local nextaction = "nothing"
+local mountreqinfo = {hostDir = "", vmDir = ""}
 
 local eavvm = {
      shutdown = function()
@@ -68,6 +74,11 @@ local eavvm = {
     end,
      sync = function()
          vm:syncfs()
+    end,
+     mount = function(hostDir, vmDir)
+         mountreqinfo.hostDir = hostDir
+         mountreqinfo.vmDir = vmDir
+         nextaction = "mount"
      end
 }
 
@@ -79,9 +90,23 @@ vm:resume()
 while vm.running do
     nextaction = "nothing"
     vm:resume()
-    --if nextaction == "..."
     if not vm.running then
         break
+    end
+    if nextaction == "mount" then
+        print("Mount request: [Host] " .. mountreqinfo.hostDir .. " -> [VM] " .. mountreqinfo.vmDir)
+        print("The VM will get full access to: " .. mountreqinfo.hostDir)
+        print("Would you like to mount this directory? (y/n)")
+        local answer = read()
+        if answer == "y" then
+            print("Mounting...")
+            vm:mount(mountreqinfo.vmDir, mountreqinfo.hostDir)
+            vm:queueEvent("eavvmmountreq", true)
+            print("Mounted!")
+        else
+            print("Mount request cancelled.")
+        end
+        vm:queueEvent("mountreq", false)
     end
     local eventData = {os.pullEventRaw()}
     local event = eventData[1]

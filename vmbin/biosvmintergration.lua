@@ -1,9 +1,8 @@
--- we do not have shell yet
--- use events to pretend to type the command
-
 if _G.startedbiosvmintegration then return end
 _G.startedbiosvmintegration = true
 
+-- We do not have shell yet,
+-- so we use events to pretend to type the command.
 local function emulateCommandRun(command, firstEnter)
     -- 1. Press Enter the first time
     if firstEnter then
@@ -23,6 +22,16 @@ local function emulateCommandRun(command, firstEnter)
     os.queueEvent("key", keys.enter, false)
 end
 
+-- eavvm function changes
+if not eavvm then error("This BIOS is not compatible with this computer.") end
+local oldMount = eavvm.mount
+eavvm.mount = function(hostDir, vmDir)
+    oldMount(hostDir, vmDir)
+    local _, result = os.pullEvent("eavvmmountreq")
+    local _, y = term.getCursorPos()
+    term.setCursorPos(1, y+6)
+    return result
+end
 emulateCommandRun("/vmbin/shellvmintergration.lua")
 
 while true do

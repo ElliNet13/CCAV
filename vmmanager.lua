@@ -2,6 +2,10 @@ if not _G.EAntiVirusStarted then
     print("ElliNet13 Antivirus is not running or installed.")
     return
 end
+if _G.EAVSafeMode then
+    print("Can not use VMs in safe mode.")
+    return
+end
 
 local current = shell.path()
 
