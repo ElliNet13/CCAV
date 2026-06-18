@@ -385,7 +385,7 @@ if fs.exists("/EAVStartup") then
         shell.run(tar, "-xzf", "eav.tar.gz")
         
         print("[Antivirus] Running setup...")
-        shell.run("assets/setup.lua")
+        shell.run("setup.lua")
 
         print("[Antivirus] Cleaning up...")
         shell.setDir("/")
