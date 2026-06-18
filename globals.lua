@@ -3,4 +3,6 @@
 eavvm = {
     --- Safe shutdown
     shutdown = function() end,
+    -- Sync the filesystem
+    sync = function() end
 }

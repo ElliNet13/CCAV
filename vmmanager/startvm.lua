@@ -65,7 +65,10 @@ local eavvm = {
          print("[EAV vmmanager] Syncing filesystem...")
          vm:syncfs(true)
          print("[EAV vmmanager] VM shut down.")
-     end,
+    end,
+     sync = function()
+         vm:syncfs()
+     end
 }
 
 vm.apis.debug = debug
