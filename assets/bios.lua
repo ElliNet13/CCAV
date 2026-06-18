@@ -2,6 +2,10 @@
 --
 -- SPDX-License-Identifier: LicenseRef-CCPL
 
+if not eavvm then
+    error("This BIOS is not compatible with this computer.")
+end
+
 -- Load in expect from the module path.
 --
 -- Ideally we'd use require, but that is part of the shell, and so is not
