@@ -66,13 +66,6 @@ local eavvm = {
          vm:syncfs(true)
          print("[EAV vmmanager] VM shut down.")
      end,
-     hshell = function(bg)
-        if bg then
-            nextaction = "hshellbg"
-        else
-            nextaction = "hshell"
-        end
-     end
 }
 
 vm.apis.debug = debug
@@ -83,16 +76,7 @@ vm:resume()
 while vm.running do
     nextaction = "nothing"
     vm:resume()
-    if nextaction == "hshell" then
-        _G.vmrevert()
-        shell.run("/rom/programs/shell.lua")
-        _G.vmsetenv()
-        vm:queueEvent("clear")
-    elseif nextaction == "hshellbg" then
-        _G.vmrevert()
-        shell.openTab("/rom/programs/shell.lua")
-        _G.vmsetenv()
-    end
+    --if nextaction == "..."
     if not vm.running then
         break
     end
