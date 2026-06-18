@@ -28,6 +28,7 @@ emulateCommandRun("/vmbin/shellvmintergration.lua")
 while true do
     local event = {os.pullEvent()}
     if event[1] == "clear" then
-        emulateCommandRun("clear")
+        term.clear()
+        term.setCursorPos(1, 1)
     end
 end
