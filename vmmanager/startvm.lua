@@ -83,7 +83,7 @@ while vm.running do
     if not vm.running then
         break
     end
-    local eventData = {os.pullEvent()}
+    local eventData = {os.pullEventRaw()}
     local event = eventData[1]
     vm:queueEvent(table.unpack(eventData))
 end
