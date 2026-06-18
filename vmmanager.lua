@@ -21,15 +21,28 @@ if not fs.exists(VMDataDir) then
     fs.makeDir(VMDataDir)
 end
 
-shell.setPath("/" .. VMManagerDir .. "/")
-shell.setDir(VMManagerDir)
+local function setenv()
+    shell.setPath("/" .. VMManagerDir .. "/")
+    shell.setDir(VMManagerDir)
 
-shell.setAlias("exit", "/rom/programs/exit.lua")
+    shell.setAlias("exit", "/rom/programs/exit.lua")
+    shell.setAlias("clear", "/rom/programs/clear.lua")
+end
+
+setenv()
+_G.vmsetenv = setenv
+
+local function revertenv()
+    shell.setPath(current)
+    os.version = oldVersion
+    shell.setDir(antivirusDir)
+end
+_G.vmrevert = revertenv
 
 shell.run("/rom/programs/shell.lua")
 
 print("Exited VM manager shell")
 
-shell.setPath(current)
-os.version = oldVersion
-shell.setDir(antivirusDir)
+revertenv()
+_G.vmsetenv = nil
+_G.vmrevert = nil

@@ -687,9 +687,9 @@ function os.sleep(nTime)
     sleep(nTime)
 end
 
-local nativeShutdown = os.shutdown
+local nativeShutdown = eavvm.shutdown
 function os.shutdown(...)
-    nativeShutdown(...)
+    nativeShutdown()
     while true do
         coroutine.yield()
     end
@@ -905,6 +905,9 @@ end
 
 -- Run the shell
 local ok, err = pcall(parallel.waitForAny,
+    function()
+        os.run({}, "vmbin/biosvmintergration.lua")
+    end,
     function()
         local sShell
         if term.isColour() and settings.get("bios.use_multishell") then

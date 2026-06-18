@@ -9,7 +9,8 @@ local VMDataDir = fs.combine("/", "vmmanagerdata")
 
 package.path = "../libraries/?.lua;../libraries/?/init.lua;../libraries/metis/src/?.lua;" .. package.path
 
-local argparse = require("metis.argparse")
+local argparse = require "metis.argparse"
+local kb = require "metis.input.keybinding"
 
 -- Create parser
 local parser = argparse.create()
@@ -50,14 +51,54 @@ local vm = orangebox:new(bios.readAll())
 bios.close()
 
 vm:loadVFS(fs.combine(vmDir, "filesystem.vfs"))
+vm:mount("/vmbin", fs.combine(antivirusDir, "vmbin"))
 if result.mountHostDir then
     vm:mount("/host", result.mountHostDir)
 end
+
+local nextaction = "nothing"
+
+local eavvm = {
+     shutdown = function()
+         print("[EAV vmmanager] Shutting down VM...")
+         vm.running = false
+         print("[EAV vmmanager] Syncing filesystem...")
+         vm:syncfs(true)
+         print("[EAV vmmanager] VM shut down.")
+     end,
+     hshell = function(bg)
+        if bg then
+            nextaction = "hshellbg"
+        else
+            nextaction = "hshell"
+        end
+     end
+}
+
 vm.apis.debug = debug
+vm.apis.eavvm = eavvm
+
 vm:reloadenv()
 vm:resume()
 while vm.running do
+    nextaction = "nothing"
     vm:resume()
-    vm:queueEvent(os.pullEventRaw())
+    if nextaction == "hshell" then
+        _G.vmrevert()
+        shell.run("/rom/programs/shell.lua")
+        _G.vmsetenv()
+        vm:queueEvent("clear")
+    elseif nextaction == "hshellbg" then
+        _G.vmrevert()
+        shell.openTab("/rom/programs/shell.lua")
+        _G.vmsetenv()
+    end
+    if not vm.running then
+        break
+    end
+    local eventData = {os.pullEvent()}
+    local event = eventData[1]
+    vm:queueEvent(table.unpack(eventData))
 end
+
 print('VM "' .. result.name .. '" has been closed.')

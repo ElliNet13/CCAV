@@ -4,9 +4,9 @@
       "./libraries"
     ]
   },
-    "diagnostics.disable": [
-        "undefined-field",
-        "deprecated",
-        "different-requires"
-    ]
+  "diagnostics.disable": [
+      "undefined-field",
+      "deprecated",
+      "different-requires"
+  ]
 }
